@@ -1,0 +1,35 @@
+.entities {
+  margin: 20px;
+}
+
+.entities__flex {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+}
+
+.repos {
+  display: flex;
+  gap: 20px;
+  flex-wrap: wrap;
+}
+
+.star {
+  width: 14px;
+  height: 14px;
+  position: relative;
+  margin-left: 14px;
+
+  &::before {
+    content: '';
+    position: absolute;
+    left: -14px;
+    width: 14px;
+    height: 14px;
+    background-image: url('img/Colored star.png');
+  }
+}
+
+.card__link {
+  text-decoration: none;
+}
