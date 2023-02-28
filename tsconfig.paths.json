@@ -8,11 +8,20 @@
       "@config/*": [
         "src/config/*"
       ],
+      "@global/*": [
+        "src/global/*"
+      ],
+      "@mixins/*": [
+        "src/mixins/*"
+      ],
       "@pages/*": [
         "src/pages/*"
       ],
       "@styles/*": [
         "src/styles/*"
+      ],
+      "@vars/*": [
+        "src/vars/*"
       ],
       "@utils/*": [
         "src/utils/*"

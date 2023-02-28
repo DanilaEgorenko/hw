@@ -1,6 +1,6 @@
-import React from 'react';
+import React, { useCallback } from 'react';
 
-import styles from '../../styles/CheckBox.module.scss';
+import styles from './CheckBox.module.scss';
 
 export type CheckBoxProps = Omit<
   React.InputHTMLAttributes<HTMLInputElement>,
@@ -11,13 +11,17 @@ export type CheckBoxProps = Omit<
 };
 
 export const CheckBox: React.FC<CheckBoxProps> = ({ onChange, ...props }) => {
+  const listener = useCallback(
+    (e: React.ChangeEvent<HTMLInputElement>) => onChange(e.target.checked),
+    [onChange]
+  );
   return (
     <div className={styles.container__checkbox}>
       <input
         {...props}
         className={styles.checkbox}
         type="checkbox"
-        onChange={(e) => onChange(e.target.checked)}
+        onChange={listener}
       />
       <span className={styles.checkmark}></span>
     </div>

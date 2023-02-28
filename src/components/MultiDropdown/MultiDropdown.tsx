@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 
-import styles from '../../styles/MultiDropdown.module.scss';
+import styles from './MultiDropdown.module.scss';
 
 export type Option = {
   checked?: boolean;

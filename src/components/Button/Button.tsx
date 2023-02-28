@@ -1,8 +1,8 @@
 import React from 'react';
 
-import styles from '../../styles/Button.module.scss';
 import { Loader } from '../Loader/Loader';
 import { LoaderSize } from '../Loader/Loader';
+import styles from './Button.module.scss';
 
 export type ButtonProps = React.PropsWithChildren<{
   /**
@@ -13,22 +13,21 @@ export type ButtonProps = React.PropsWithChildren<{
 }> &
   React.ButtonHTMLAttributes<HTMLButtonElement>;
 
-export const Button: React.FC<ButtonProps> = ({
-  loading,
-  className,
-  children,
-  ...props
-}) => {
-  return (
-    <button
-      className={`${styles.button} ${
-        loading || props?.disabled ? `${styles.button_disabled}` : ''
-      } ${className && styles[className]}`}
-      disabled={loading}
-      {...props}
-    >
-      {loading && <Loader className="loader-color_white" size={LoaderSize.s} />}
-      {children}
-    </button>
-  );
-};
+export const Button: React.FC<ButtonProps> = React.memo(
+  ({ loading, className, children, ...props }) => {
+    return (
+      <button
+        className={`${styles.button} ${
+          loading || props?.disabled ? `${styles.button_disabled}` : ''
+        } ${className && styles[className]}`}
+        disabled={loading}
+        {...props}
+      >
+        {loading && (
+          <Loader className="loader-color_white" size={LoaderSize.s} />
+        )}
+        {children}
+      </button>
+    );
+  }
+);

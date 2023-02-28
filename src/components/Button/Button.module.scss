@@ -1,0 +1,49 @@
+@use '../../styles/variables.scss';
+
+.button {
+  height: variables.$button-size;
+  background: variables.$button-background;
+  border-radius: 6px;
+  border: 0;
+  transition: .3s;
+  cursor: pointer;
+  color: variables.$white-color;
+  font-size: 20px;
+  display: inline-flex;
+  font-family: 'Roboto';
+  font-style: normal;
+  font-weight: 700;
+  font-size: 20px;
+  line-height: 23px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  width: variables.$button-width;
+
+  &:hover {
+    opacity: .7;
+  }
+
+  &:disabled {
+    background: variables.$button-background-disabled;
+
+    &:hover {
+      opacity: 1;
+    }
+  }
+
+  &__search {
+    width: variables.$button-size;
+    height: variables.$button-size;
+    position: relative;
+
+    &::after {
+      content: '';
+      position: absolute;
+      width: variables.$button-search-size;
+      height: variables.$button-search-size;
+      background-image: url('./Search.svg');
+    }
+  }
+}
