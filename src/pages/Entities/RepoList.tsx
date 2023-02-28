@@ -6,13 +6,10 @@ import axios from 'axios';
 import { Link } from 'react-router-dom';
 
 import styles from './Entities.module.scss';
-
-interface IRepoList {
-  searchParams: URLSearchParams;
-}
+import { IRepo, IRepoList } from './repos/client';
 
 export const RepoList: React.FC<IRepoList> = ({ searchParams }) => {
-  const [repos, setRepos] = useState<Object[]>([]);
+  const [repos, setRepos] = useState<IRepo[]>([]);
   useEffect(() => {
     const fetch = async () => {
       const res = await axios.get(
