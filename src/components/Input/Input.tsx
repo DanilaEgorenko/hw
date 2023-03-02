@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 
 import styles from './Input.module.scss';
 
@@ -13,10 +13,12 @@ export type InputProps = Omit<
 };
 
 export const Input: React.FC<InputProps> = ({ value, onChange, ...props }) => {
-  const [val, setVal] = useState('');
-  useEffect(() => {
-    setVal(value);
-  }, [value]);
+  const handleChange = React.useCallback(
+    (e: string) => {
+      onChange(e);
+    },
+    [onChange]
+  );
   return (
     <input
       {...props}
@@ -24,11 +26,8 @@ export const Input: React.FC<InputProps> = ({ value, onChange, ...props }) => {
         props?.className && styles[props?.className]
       }`}
       type="text"
-      value={val}
-      onChange={(e) => {
-        setVal(e.target.value);
-        return onChange(e.target.value);
-      }}
+      value={value}
+      onChange={(e) => handleChange(e.target.value)}
     />
   );
 };

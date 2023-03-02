@@ -1,5 +1,5 @@
-import { Entities } from '@pages/Entities/Entities';
 import { Repo } from '@pages/Repo/Repo';
+import { Entities } from '@pages/ReposList/ReposList';
 import { BrowserRouter, Navigate, Route, Routes } from 'react-router-dom';
 
 export const App: React.FC = () => {

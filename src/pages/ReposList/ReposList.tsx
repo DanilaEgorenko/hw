@@ -5,8 +5,8 @@ import { Input } from '@components/Input/Input';
 import { MultiDropdown } from '@components/MultiDropdown/MultiDropdown';
 import { useSearchParams } from 'react-router-dom';
 
-import styles from './Entities.module.scss';
-import { RepoList } from './RepoList';
+import { RepoList } from './RepoList/RepoList';
+import styles from './ReposList.module.scss';
 
 interface IType {
   checked: boolean;

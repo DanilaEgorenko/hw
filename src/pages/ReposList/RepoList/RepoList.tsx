@@ -1,12 +1,12 @@
 import { useEffect, useState } from 'react';
 
 import { Card } from '@components/Card/Card';
+import { IRepo, IRepoList } from '@entities/repos/client';
 import { toDate } from '@utils/toDate';
 import axios from 'axios';
 import { Link } from 'react-router-dom';
 
-import styles from './Entities.module.scss';
-import { IRepo, IRepoList } from './repos/client';
+import styles from '../ReposList.module.scss';
 
 export const RepoList: React.FC<IRepoList> = ({ searchParams }) => {
   const [repos, setRepos] = useState<IRepo[]>([]);

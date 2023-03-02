@@ -20,6 +20,9 @@
       "@styles/*": [
         "src/styles/*"
       ],
+      "@entities/*": [
+        "src/entities/*"
+      ],
       "@vars/*": [
         "src/vars/*"
       ],
