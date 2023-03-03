@@ -1,5 +1,5 @@
 export interface IPagination {
-  pageCount: number;
-  setPageCount: React.Dispatch<React.SetStateAction<number>>;
+  curPage: number;
+  setCurPage: React.Dispatch<React.SetStateAction<number>>;
   hasNextPage: boolean;
 }

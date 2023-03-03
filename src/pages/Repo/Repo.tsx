@@ -1,34 +1,37 @@
 import { useEffect, useState } from 'react';
 
 import { Tag } from '@components/Tag/Tag';
-import axios from 'axios';
+import { IRepo } from '@entities/repos/client';
 import parse from 'html-react-parser';
+import { observer } from 'mobx-react-lite';
 import { useNavigate, useParams } from 'react-router-dom';
 
+import RepoStore from '../../store/RepoStore';
 import styles from './Repo.module.scss';
 
-export const Repo: React.FC = () => {
+export const Repo: React.FC = observer(() => {
   const { repo } = useParams();
-  const [repoData, setRepoData] = useState<any>();
-  const [readme, setReadme] = useState();
-  useEffect(() => {
-    const fetch = async () => {
-      const res = await axios.get(
-        `https://api.github.com/repos/ktsstudio/${repo}`
-      );
-      setRepoData(res.data);
-      const readme = await axios.get(
-        `https://api.github.com/repos/ktsstudio/${repo}/readme`,
-        {
-          headers: {
-            accept: 'application/vnd.github.html+json',
-          },
-        }
-      );
-      setReadme(readme.data);
-    };
+  const [repoData, setRepoData] = useState<IRepo>();
+  const [readme, setReadme] = useState<string>('');
+  const repoStore = new RepoStore();
 
-    fetch();
+  useEffect(() => {
+    repoStore
+      .getOrganizationRepoData({
+        organizationName: 'ktsstudio',
+        repo,
+      })
+      .then(() => {
+        setRepoData(repoStore.repo);
+      });
+    repoStore
+      .getOrganizationRepoReadme({
+        organizationName: 'ktsstudio',
+        repo,
+      })
+      .then(() => {
+        setReadme(repoStore.readme);
+      });
   }, [repo]);
   const navigate = useNavigate();
   if (!repoData) {
@@ -48,7 +51,7 @@ export const Repo: React.FC = () => {
         )}
         {repoData?.description && <span>{repoData?.description}</span>}
         <div className={styles.tags}>
-          {repoData?.topics?.map((el: any) => (
+          {repoData?.topics?.map((el: string) => (
             <Tag title={el} key={el} />
           ))}
         </div>
@@ -70,4 +73,4 @@ export const Repo: React.FC = () => {
       )}
     </div>
   );
-};
+});
