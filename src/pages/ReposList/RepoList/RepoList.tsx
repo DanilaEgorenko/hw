@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect } from 'react';
 
 import { Card } from '@components/Card/Card';
 import { Pagination } from '@components/Pagination/Pagination';
@@ -6,29 +6,22 @@ import { IRepo, IRepoList } from '@entities/repos/client';
 import ReposListStore from '@store/ReposListStore';
 import { toDate } from '@utils/toDate';
 import { observer } from 'mobx-react-lite';
-import { Link, useSearchParams } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 
 import styles from '../ReposList.module.scss';
 
 export const RepoList: React.FC<IRepoList> = observer(() => {
-  const [searchParams, setSearchParams] = useSearchParams();
-  const [repos, setRepos] = useState<IRepo[]>([]);
   const reposStore = new ReposListStore();
   useEffect(() => {
-    reposStore
-      .getOrganizationReposList({
-        organizationName: 'ktsstudio',
-        searchParams,
-      })
-      .then(() => {
-        setRepos(reposStore.repos);
-      });
-  }, [searchParams]);
+    reposStore.getOrganizationReposList({
+      organizationName: 'ktsstudio',
+    });
+  }, []);
 
   return (
     <>
       <div className={styles.repos}>
-        {repos.map((repo: IRepo) => {
+        {reposStore.repos.map((repo: IRepo) => {
           return (
             <Link
               to={`/repo/${repo.name}`}

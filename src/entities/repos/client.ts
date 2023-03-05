@@ -110,6 +110,4 @@ export interface IRepo {
   permissions: Permissions;
 }
 
-export interface IRepoList {
-  searchParams: URLSearchParams;
-}
+export interface IRepoList {}

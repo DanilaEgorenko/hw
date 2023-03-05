@@ -4,7 +4,7 @@ import {
   GetOrganisationReposListParams,
   IReposListStore
 } from '@entities/reposListStore/client';
-import { BASE_URL } from '@entities/store/client';
+import RootStore from '@store/RootStore';
 import {
   action,
   computed,
@@ -13,16 +13,26 @@ import {
   runInAction
 } from 'mobx';
 
-import ApiStore from '../ApiStore/ApiStore';
-
-type PrivateFields = '_meta' | '_repos' | '_curPage' | '_hasNextPage';
+type PrivateFields =
+  | '_meta'
+  | '_repos'
+  | '_curPage'
+  | '_hasNextPage'
+  | '_searchVal'
+  | '_type';
 
 export default class ReposListStore implements IReposListStore {
-  private readonly _apiStore = new ApiStore(BASE_URL);
+  private readonly _rootStore = new RootStore();
   private _meta: Meta = Meta.initial;
   private _repos: IRepo[] = [];
-  private _curPage: number = 1;
+  private _curPage: number = +(
+    this._rootStore._searchParamsStore.searchParams.get('page') || 1
+  );
   private _hasNextPage: boolean = false;
+  private _searchVal: string =
+    this._rootStore._searchParamsStore.searchParams.get('search') || '';
+  private _type: string =
+    this._rootStore._searchParamsStore.searchParams.get('type') || '';
 
   constructor() {
     makeObservable<ReposListStore, PrivateFields>(this, {
@@ -30,8 +40,12 @@ export default class ReposListStore implements IReposListStore {
       _repos: observable, // нельзя сменить на computed
       _curPage: observable,
       _hasNextPage: observable,
+      _searchVal: observable,
+      _type: observable,
       meta: computed,
-      getOrganizationReposList: action,
+      getOrganizationReposList: action.bound,
+      hasNextReposList: action.bound,
+      setSearchVal: action.bound,
     });
   }
 
@@ -47,12 +61,16 @@ export default class ReposListStore implements IReposListStore {
     return this._curPage;
   }
 
-  set curPage(val) {
-    this._curPage = val;
-  }
-
   get hasNextPage(): boolean {
     return this._hasNextPage;
+  }
+
+  get searchVal(): string {
+    return this._searchVal;
+  }
+
+  get type(): string {
+    return this._type;
   }
 
   async getOrganizationReposList(
@@ -60,7 +78,7 @@ export default class ReposListStore implements IReposListStore {
   ): Promise<void> {
     this._meta = Meta.loading;
 
-    const response = await this._apiStore.request({
+    const response = await this._rootStore._apiStore.request({
       endpoint: `/orgs/${params.organizationName}/repos?page=${this.curPage}`,
     });
 
@@ -72,13 +90,16 @@ export default class ReposListStore implements IReposListStore {
         this._meta = Meta.success;
         this._repos = response.data
           .filter(({ name }: { name: string }) => {
-            const paramSearch = params.searchParams.get('search');
+            const paramSearch =
+              this._rootStore._searchParamsStore.searchParams.get('search');
             if (paramSearch) return name.includes(paramSearch);
             return true;
           })
           .filter((el: IRepo) => {
             const paramSearch =
-              params.searchParams.get('type')?.split(';') || [];
+              this._rootStore._searchParamsStore.searchParams
+                .get('type')
+                ?.split(';') || [];
             if (paramSearch.length && paramSearch[0]) {
               for (let p of paramSearch) {
                 if (
@@ -111,7 +132,7 @@ export default class ReposListStore implements IReposListStore {
   ): Promise<void> {
     this._meta = Meta.loading;
 
-    const response = await this._apiStore.request({
+    const response = await this._rootStore._apiStore.request({
       endpoint: `/orgs/${params.organizationName}/repos?page=${
         this.curPage + 1
       }`,
@@ -131,6 +152,10 @@ export default class ReposListStore implements IReposListStore {
     });
 
     this._meta = Meta.error;
+  }
+
+  setSearchVal(val: string): void {
+    this._searchVal = val;
   }
 
   destroy(): void {}

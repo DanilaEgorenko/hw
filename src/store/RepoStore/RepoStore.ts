@@ -4,7 +4,7 @@ import {
 } from '@entities/githubstore/client';
 import { Meta } from '@entities/meta/client';
 import { IRepo } from '@entities/repos/client';
-import { BASE_URL } from '@entities/store/client';
+import RootStore from '@store/RootStore';
 import {
   action,
   computed,
@@ -13,12 +13,10 @@ import {
   runInAction
 } from 'mobx';
 
-import ApiStore from '../ApiStore/ApiStore';
-
 type PrivateFields = '_meta' | '_repo' | '_readme';
 
 export default class RepoStore implements IGitHubStore {
-  private readonly _apiStore = new ApiStore(BASE_URL);
+  private readonly _rootStore = new RootStore();
   private _meta: Meta = Meta.initial;
   private _repo: IRepo | null = null;
   private _readme: string = '';
@@ -30,6 +28,7 @@ export default class RepoStore implements IGitHubStore {
       _readme: observable, // нельзя сменить на computed
       meta: computed,
       getOrganizationRepoData: action.bound,
+      getOrganizationRepoReadme: action.bound,
     });
   }
 
@@ -50,7 +49,7 @@ export default class RepoStore implements IGitHubStore {
   ): Promise<void> {
     this._meta = Meta.loading;
 
-    const response = await this._apiStore.request({
+    const response = await this._rootStore._apiStore.request({
       endpoint: `/repos/${params.organizationName}/${params.repo}`,
     });
 
@@ -75,7 +74,7 @@ export default class RepoStore implements IGitHubStore {
   ): Promise<void> {
     this._meta = Meta.loading;
 
-    const response = await this._apiStore.request({
+    const response = await this._rootStore._apiStore.request({
       headers: {
         accept: 'application/vnd.github.html+json',
       },
