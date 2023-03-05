@@ -1,38 +1,35 @@
 import {
   GetOrganisationRepoDataParams,
-  // eslint-disable-next-line prettier/prettier
   IGitHubStore
 } from '@entities/githubstore/client';
+import { Meta } from '@entities/meta/client';
 import { IRepo } from '@entities/repos/client';
-import { Meta } from '@utils/meta';
+import { BASE_URL } from '@entities/store/client';
 import {
   action,
   computed,
   makeObservable,
   observable,
-  // eslint-disable-next-line prettier/prettier
   runInAction
 } from 'mobx';
 
 import ApiStore from '../ApiStore/ApiStore';
-
-const BASE_URL = 'https://api.github.com';
 
 type PrivateFields = '_meta' | '_repo' | '_readme';
 
 export default class RepoStore implements IGitHubStore {
   private readonly _apiStore = new ApiStore(BASE_URL);
   private _meta: Meta = Meta.initial;
-  private _repo: IRepo = {} as IRepo;
+  private _repo: IRepo | null = null;
   private _readme: string = '';
 
   constructor() {
     makeObservable<RepoStore, PrivateFields>(this, {
       _meta: observable,
-      _repo: observable.ref,
-      _readme: observable.ref,
+      _repo: observable, // нельзя сменить на computed
+      _readme: observable, // нельзя сменить на computed
       meta: computed,
-      getOrganizationRepoData: action,
+      getOrganizationRepoData: action.bound,
     });
   }
 
@@ -40,7 +37,7 @@ export default class RepoStore implements IGitHubStore {
     return this._meta;
   }
 
-  get repo(): IRepo {
+  get repo(): IRepo | null {
     return this._repo;
   }
 
@@ -52,13 +49,15 @@ export default class RepoStore implements IGitHubStore {
     params: GetOrganisationRepoDataParams
   ): Promise<void> {
     this._meta = Meta.loading;
-    this._repo = {} as IRepo;
 
     const response = await this._apiStore.request({
       endpoint: `/repos/${params.organizationName}/${params.repo}`,
     });
 
     runInAction(() => {
+      if (this._meta === Meta.loading) {
+        return;
+      }
       if (response.status === 200) {
         this._meta = Meta.success;
         this._repo = response.data;
@@ -75,7 +74,6 @@ export default class RepoStore implements IGitHubStore {
     params: GetOrganisationRepoDataParams
   ): Promise<void> {
     this._meta = Meta.loading;
-    this._readme = '';
 
     const response = await this._apiStore.request({
       headers: {

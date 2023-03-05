@@ -1,13 +1,7 @@
+import { IRequest } from '@entities/apiStore/client';
 import axios from 'axios';
 
-interface IRequest {
-  endpoint: string;
-  headers?: {
-    accept: string;
-  };
-}
-
-export default class RepoStore {
+export default class ApiStore {
   url = '';
   constructor(url: string) {
     this.url = url;

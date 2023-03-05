@@ -1,15 +1,28 @@
+import { useEffect, useState } from 'react';
+
 import { Button } from '@components/Button/Button';
 import { IPagination } from '@entities/pagination/client';
+import { observer } from 'mobx-react-lite';
 import { useSearchParams } from 'react-router-dom';
 
 import styles from '../Pagination/Pagination.module.scss';
 
-export const Pagination: React.FC<IPagination> = ({
-  curPage,
-  setCurPage,
-  hasNextPage,
-}) => {
+export const Pagination: React.FC<IPagination> = observer(({ reposStore }) => {
   const [searchParams, setSearchParams] = useSearchParams();
+  const [hasNextPage, setHasNextPage] = useState(false);
+  const [curPage, setCurPage] = useState<number>(
+    +(searchParams.get('page') || 1)
+  );
+  useEffect(() => {
+    reposStore
+      .hasNextReposList({
+        organizationName: 'ktsstudio',
+        searchParams,
+      })
+      .then(() => {
+        setHasNextPage(reposStore.hasNextPage);
+      });
+  });
   if (curPage <= 1 && !hasNextPage) return null;
   return (
     <div className={styles.pagination}>
@@ -17,7 +30,7 @@ export const Pagination: React.FC<IPagination> = ({
         <Button
           className="next"
           onClick={() => {
-            setCurPage((p) => p - 1);
+            setCurPage(curPage - 1);
             searchParams.set('page', `${curPage - 1}`);
             setSearchParams(searchParams);
           }}
@@ -30,7 +43,7 @@ export const Pagination: React.FC<IPagination> = ({
         <Button
           className="next"
           onClick={() => {
-            setCurPage((p) => p + 1);
+            setCurPage(curPage + 1);
             searchParams.set('page', `${curPage + 1}`);
             setSearchParams(searchParams);
           }}
@@ -40,4 +53,4 @@ export const Pagination: React.FC<IPagination> = ({
       )}
     </div>
   );
-};
+});

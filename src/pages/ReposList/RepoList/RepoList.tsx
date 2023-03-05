@@ -3,64 +3,28 @@ import { useEffect, useState } from 'react';
 import { Card } from '@components/Card/Card';
 import { Pagination } from '@components/Pagination/Pagination';
 import { IRepo, IRepoList } from '@entities/repos/client';
+import ReposListStore from '@store/ReposListStore';
 import { toDate } from '@utils/toDate';
-import { Link } from 'react-router-dom';
+import { observer } from 'mobx-react-lite';
+import { Link, useSearchParams } from 'react-router-dom';
 
-import ReposListStore from '../../../../src/store/ReposListStore';
 import styles from '../ReposList.module.scss';
 
-export const RepoList: React.FC<IRepoList> = ({ searchParams }) => {
+export const RepoList: React.FC<IRepoList> = observer(() => {
+  const [searchParams, setSearchParams] = useSearchParams();
   const [repos, setRepos] = useState<IRepo[]>([]);
-  const [curPage, setCurPage] = useState<number>(
-    +(searchParams.get('page') || 1)
-  );
-  const [hasNextPage, setHasNextPage] = useState(false);
   const reposStore = new ReposListStore();
   useEffect(() => {
     reposStore
       .getOrganizationReposList({
         organizationName: 'ktsstudio',
-        curPage,
+        searchParams,
       })
       .then(() => {
-        setRepos(
-          reposStore.repos
-            .filter(({ name }: { name: string }) => {
-              const paramSearch = searchParams.get('search');
-              if (paramSearch) return name.includes(paramSearch);
-              return true;
-            })
-            .filter((el: IRepo) => {
-              const paramSearch = searchParams.get('type')?.split(';') || [];
-              if (paramSearch.length && paramSearch[0]) {
-                for (let p of paramSearch) {
-                  if (
-                    (!el.private && p === 'public') ||
-                    (el.private && p === 'private') ||
-                    (el.archived && p === 'archived') ||
-                    (!el.archived && p === 'non-archived') ||
-                    (el.allow_forking && p === 'allow-forking') ||
-                    (!el.allow_forking && p === 'non-allow-forking')
-                  ) {
-                    continue;
-                  } else {
-                    return false;
-                  }
-                }
-              }
-              return true;
-            })
-        );
+        setRepos(reposStore.repos);
       });
-    reposStore
-      .getOrganizationReposList({
-        organizationName: 'ktsstudio',
-        curPage: curPage + 1,
-      })
-      .then(() => {
-        setHasNextPage(!!reposStore.repos.length);
-      });
-  }, [curPage, searchParams]);
+  }, [searchParams]);
+
   return (
     <>
       <div className={styles.repos}>
@@ -82,6 +46,7 @@ export const RepoList: React.FC<IRepoList> = ({ searchParams }) => {
                       <span className={styles.star}>
                         {repo.stargazers_count}
                       </span>
+
                       <span>{'Updated ' + toDate(repo.updated_at + '')}</span>
                     </div>
                   </>
@@ -91,11 +56,8 @@ export const RepoList: React.FC<IRepoList> = ({ searchParams }) => {
           );
         })}
       </div>
-      <Pagination
-        curPage={curPage}
-        setCurPage={setCurPage}
-        hasNextPage={hasNextPage}
-      />
+
+      <Pagination reposStore={reposStore} />
     </>
   );
-};
+});

@@ -6,5 +6,5 @@ export interface IReposListStore {
 
 export interface GetOrganisationReposListParams {
   organizationName: string;
-  curPage: number;
+  searchParams: URLSearchParams;
 }

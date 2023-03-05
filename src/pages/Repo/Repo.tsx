@@ -2,16 +2,16 @@ import { useEffect, useState } from 'react';
 
 import { Tag } from '@components/Tag/Tag';
 import { IRepo } from '@entities/repos/client';
+import RepoStore from '@store/RepoStore';
 import parse from 'html-react-parser';
 import { observer } from 'mobx-react-lite';
 import { useNavigate, useParams } from 'react-router-dom';
 
-import RepoStore from '../../store/RepoStore';
 import styles from './Repo.module.scss';
 
 export const Repo: React.FC = observer(() => {
   const { repo } = useParams();
-  const [repoData, setRepoData] = useState<IRepo>();
+  const [repoData, setRepoData] = useState<IRepo | null>();
   const [readme, setReadme] = useState<string>('');
   const repoStore = new RepoStore();
 

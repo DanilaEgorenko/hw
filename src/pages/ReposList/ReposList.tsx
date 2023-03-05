@@ -3,16 +3,11 @@ import { useState } from 'react';
 import { Button } from '@components/Button/Button';
 import { Input } from '@components/Input/Input';
 import { MultiDropdown } from '@components/MultiDropdown/MultiDropdown';
+import { IType } from '@entities/reposList/client';
 import { useSearchParams } from 'react-router-dom';
 
 import { RepoList } from './RepoList/RepoList';
 import styles from './ReposList.module.scss';
-
-interface IType {
-  checked: boolean;
-  key: string;
-  value: string;
-}
 
 export const Entities: React.FC = () => {
   const [searchParams, setSearchParams] = useSearchParams();
