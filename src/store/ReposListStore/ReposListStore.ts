@@ -123,8 +123,6 @@ export default class ReposListStore implements IReposListStore {
 
       this._meta = Meta.error;
     });
-
-    this._meta = Meta.error;
   }
 
   async hasNextReposList(
@@ -150,8 +148,6 @@ export default class ReposListStore implements IReposListStore {
 
       this._meta = Meta.error;
     });
-
-    this._meta = Meta.error;
   }
 
   setSearchVal(val: string): void {

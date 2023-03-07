@@ -36,7 +36,9 @@ export const Entities: React.FC = observer(() => {
     types.filter((el: IType) => el.checked)
   );
   const handleInput = useCallback(
-    (value: string) => reposList.setSearchVal(value),
+    (value: string) => {
+      reposList.setSearchVal(value);
+    },
     [reposList]
   );
   const searchParamsStore = new SearchParamsStore();
@@ -55,10 +57,10 @@ export const Entities: React.FC = observer(() => {
       <div className={styles.entities__flex}>
         <Input
           value={reposList.searchVal}
-          onChange={handleInput}
+          onChange={(e) => handleInput(e)}
           placeholder="Enter organization name"
         />
-        <Button className="button__search" onClick={(e) => handleSearch} />
+        <Button className="button__search" onClick={(e) => handleSearch(e)} />
       </div>
       <div className={styles.entities__flex}>
         <h1>Repositories</h1>
