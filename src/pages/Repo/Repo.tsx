@@ -1,4 +1,4 @@
-import { useEffect } from 'react';
+import React, { useEffect } from 'react';
 
 import { Tag } from '@components/Tag/Tag';
 import RepoStore from '@store/RepoStore';

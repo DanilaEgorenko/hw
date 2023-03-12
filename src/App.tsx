@@ -1,3 +1,5 @@
+import React from 'react';
+
 import { Repo } from '@pages/Repo/Repo';
 import { ReposList } from '@pages/ReposList/ReposList';
 import { Navigate, Route, Routes } from 'react-router-dom';

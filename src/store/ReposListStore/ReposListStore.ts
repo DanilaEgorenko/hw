@@ -1,5 +1,5 @@
-import { Option } from '@components/MultiDropdown/MultiDropdown';
 import { Meta } from '@entities/meta/client';
+import { Option } from '@entities/multiDropdown/client';
 import { IRepo } from '@entities/repos/client';
 import { IType } from '@entities/reposList/client';
 import {

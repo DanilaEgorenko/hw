@@ -5,10 +5,11 @@ const TsCheckerPlugin = require('fork-ts-checker-webpack-plugin');
 // eslint-disable-next-line import/order
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 
-const buildPath = path.resolve(__dirname, 'dist');
 const isProd = process.env.NODE_ENV === 'production';
 
-const srcPath = 'src/';
+const buildPath = path.resolve(__dirname, 'dist');
+const sourcePath = path.resolve(__dirname, 'src');
+const publicPath = path.resolve(__dirname, 'public');
 
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 const getSettingsForStyles = (withModules = false) => {
@@ -39,7 +40,7 @@ const getSettingsForStyles = (withModules = false) => {
 };
 
 module.exports = {
-  entry: path.resolve(__dirname, '/src/index.tsx'),
+  entry: path.resolve(sourcePath, 'index.tsx'),
   output: {
     path: buildPath,
     filename: 'bundle.js',
@@ -56,11 +57,8 @@ module.exports = {
         use: getSettingsForStyles(),
       },
       {
-        test: /\.css/,
-        use: ['style-loader', 'css-loader'],
-      },
-      {
         test: /\.[tj]sx?$/,
+        exclude: /node_modules/,
         use: 'babel-loader',
       },
       {
@@ -73,17 +71,15 @@ module.exports = {
         },
       },
       {
-        test: /\.(woff|woff2|ttf|otf|eot)$/,
+        test: /\.(woff2?|eot|ttf|otf)$/,
         type: 'asset/resource',
-        generator: {
-          filename: 'src/styles/[name][ext]',
-        },
       },
     ],
   },
   plugins: [
     new HtmlWebpackPlugin({
-      template: path.resolve(srcPath, 'index.html'),
+      template: path.resolve(publicPath, 'index.html'),
+      filename: './index.html',
     }),
     !isProd && new ReactRefreshWebpackPlugin(),
     new MiniCssExtractPlugin({
@@ -95,7 +91,7 @@ module.exports = {
     host: '127.0.0.1',
     port: 3000,
     static: {
-      directory: path.join(__dirname, 'public'),
+      directory: publicPath,
     },
     hot: true,
     historyApiFallback: true,
@@ -105,15 +101,15 @@ module.exports = {
   resolve: {
     extensions: ['.tsx', '.jsx', '.js', '.ts'],
     alias: {
-      '@components': path.join(__dirname, 'src/components/'),
-      '@config': path.join(__dirname, 'src/config/'),
-      '@global': path.join(__dirname, 'src/global/'),
-      '@mixins': path.join(__dirname, 'src/mixins/'),
-      '@pages': path.join(__dirname, 'src/pages/'),
-      '@store': path.join(__dirname, 'src/store/'),
-      '@styles': path.join(__dirname, 'src/styles/'),
-      '@entities': path.join(__dirname, 'src/entities/'),
-      '@utils': path.join(__dirname, 'src/utils/'),
+      '@components': path.join(sourcePath, 'components/'),
+      '@config': path.join(sourcePath, 'config/'),
+      '@global': path.join(sourcePath, 'global/'),
+      '@mixins': path.join(sourcePath, 'mixins/'),
+      '@pages': path.join(sourcePath, 'pages/'),
+      '@store': path.join(sourcePath, 'store/'),
+      '@styles': path.join(sourcePath, 'styles/'),
+      '@entities': path.join(sourcePath, 'entities/'),
+      '@utils': path.join(sourcePath, 'utils/'),
     },
   },
 };

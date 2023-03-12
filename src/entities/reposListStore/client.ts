@@ -1,6 +1,8 @@
-import { Option } from '@components/MultiDropdown/MultiDropdown';
+import { Option } from '@entities/multiDropdown/client';
 
 export interface IReposListStore {
+  hasNextPage: boolean;
+  curPage: number;
   getOrganizationReposList(
     params: GetOrganisationReposListParams
   ): Promise<void>;
