@@ -1,35 +1,32 @@
-import { Meta } from '@entities/meta/client';
-import {
-  ISearchParamsStore,
-  ISetSearchParams
-} from '@entities/searchParamsStore/client';
-import { BASE_URL } from '@entities/store/client';
+import { ISearchParamsStore } from '@entities/searchParamsStore/client';
 import { action, makeObservable, observable } from 'mobx';
+import * as qs from 'qs';
 
-import ApiStore from '../ApiStore/ApiStore';
-
-type PrivateFields = '_meta' | '_searchParams';
+type PrivateFields = '_searchParams';
 
 export default class SearchParamsStore implements ISearchParamsStore {
-  private readonly _apiStore = new ApiStore(BASE_URL);
-  private _meta: Meta = Meta.initial;
-  private readonly _searchParams = new URLSearchParams(window.location.href);
+  private _searchParams: qs.ParsedQs = {};
+  private _search: string = '';
 
   constructor() {
     makeObservable<SearchParamsStore, PrivateFields>(this, {
-      _meta: observable,
-      _searchParams: observable,
-      setSearchParams: action.bound,
+      _searchParams: observable.ref,
+      setSearch: action,
     });
   }
 
-  get searchParams(): URLSearchParams {
-    return this._searchParams;
+  getParam(
+    key: string
+  ): undefined | string | string[] | qs.ParsedQs | qs.ParsedQs[] {
+    return this._searchParams[key];
   }
 
-  setSearchParams({ target, value }: ISetSearchParams): void {
-    this.searchParams.set(target, value);
-  }
+  setSearch(search: string) {
+    search = search.startsWith('?') ? search.slice(1) : search;
 
-  destroy(): void {}
+    if (this._search !== search) {
+      this._search = search;
+      this._searchParams = qs.parse(search);
+    }
+  }
 }

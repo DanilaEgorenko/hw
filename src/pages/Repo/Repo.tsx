@@ -3,14 +3,14 @@ import { useEffect } from 'react';
 import { Tag } from '@components/Tag/Tag';
 import RepoStore from '@store/RepoStore';
 import parse from 'html-react-parser';
-import { observer } from 'mobx-react-lite';
+import { observer, useLocalObservable } from 'mobx-react-lite';
 import { useNavigate, useParams } from 'react-router-dom';
 
 import styles from './Repo.module.scss';
 
 export const Repo: React.FC = observer(() => {
   const { repo } = useParams();
-  const repoStore = new RepoStore();
+  const repoStore = useLocalObservable(() => new RepoStore());
 
   useEffect(() => {
     repoStore.getOrganizationRepoData({
@@ -21,10 +21,9 @@ export const Repo: React.FC = observer(() => {
       organizationName: 'ktsstudio',
       repo,
     });
-  }, [repo]);
+  }, [repo, repoStore]);
   const navigate = useNavigate();
   if (!repoStore.repo) {
-    // не обновляется значение после загрузки
     return null;
   }
   return (

@@ -54,9 +54,6 @@ export default class RepoStore implements IGitHubStore {
     });
 
     runInAction(() => {
-      if (this._meta === Meta.loading) {
-        return;
-      }
       if (response.status === 200) {
         this._meta = Meta.success;
         this._repo = response.data;
@@ -80,9 +77,6 @@ export default class RepoStore implements IGitHubStore {
     });
 
     runInAction(() => {
-      if (this._meta === Meta.loading) {
-        return;
-      }
       if (response.status === 200) {
         this._meta = Meta.success;
         this._readme = response.data;

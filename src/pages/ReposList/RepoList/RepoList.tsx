@@ -5,18 +5,18 @@ import { Pagination } from '@components/Pagination/Pagination';
 import { IRepo, IRepoList } from '@entities/repos/client';
 import ReposListStore from '@store/ReposListStore';
 import { toDate } from '@utils/toDate';
-import { observer } from 'mobx-react-lite';
+import { observer, useLocalObservable } from 'mobx-react-lite';
 import { Link } from 'react-router-dom';
 
 import styles from '../ReposList.module.scss';
 
 export const RepoList: React.FC<IRepoList> = observer(() => {
-  const reposStore = new ReposListStore();
+  const reposStore = useLocalObservable(() => new ReposListStore());
   useEffect(() => {
     reposStore.getOrganizationReposList({
       organizationName: 'ktsstudio',
     });
-  }, []);
+  }, [reposStore]);
 
   return (
     <>

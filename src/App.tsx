@@ -1,17 +1,18 @@
 import { Repo } from '@pages/Repo/Repo';
-import { Entities } from '@pages/ReposList/ReposList';
-import { BrowserRouter, Navigate, Route, Routes } from 'react-router-dom';
+import { ReposList } from '@pages/ReposList/ReposList';
+import { Navigate, Route, Routes } from 'react-router-dom';
+
+import { useQueryParamsStoreInit } from './hooks/useSearchParamsInit';
 
 export const App: React.FC = () => {
+  useQueryParamsStoreInit();
   return (
-    <BrowserRouter>
-      <Routes>
-        <Route path="/" element={<Entities />} />
-        <Route path="/repo">
-          <Route path=":repo" element={<Repo />} />
-        </Route>
-        <Route path="*" element={<Navigate to="/" replace />} />
-      </Routes>
-    </BrowserRouter>
+    <Routes>
+      <Route path="/" element={<ReposList />} />
+      <Route path="/repo">
+        <Route path=":repo" element={<Repo />} />
+      </Route>
+      <Route path="*" element={<Navigate to="/" replace />} />
+    </Routes>
   );
 };

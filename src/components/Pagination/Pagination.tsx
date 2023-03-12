@@ -1,27 +1,27 @@
-import { useCallback, useEffect } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 
 import { Button } from '@components/Button/Button';
 import { IPagination } from '@entities/pagination/client';
 import SearchParamsStore from '@store/SearchParamsStore';
 import { observer } from 'mobx-react-lite';
+import { useSearchParams } from 'react-router-dom';
 
 import styles from '../Pagination/Pagination.module.scss';
 
 export const Pagination: React.FC<IPagination> = observer(({ reposStore }) => {
-  const searchParamsStore = new SearchParamsStore();
+  const [searchParamsStore] = useState(() => new SearchParamsStore());
   useEffect(() => {
     reposStore.hasNextReposList({
       organizationName: 'ktsstudio',
     });
   });
+  const [searchParams, setSearchParams] = useSearchParams();
   const toLastPage = useCallback(
     (val: number) => {
-      searchParamsStore.setSearchParams({
-        target: 'page',
-        value: `${reposStore.curPage + val}`,
-      });
+      searchParams.set('page', `${reposStore.curPage + val}`);
+      setSearchParams(searchParams);
     },
-    [reposStore.curPage]
+    [reposStore.curPage, searchParamsStore]
   );
   if (reposStore.curPage <= 1 && !reposStore.hasNextPage) return null;
   return (
