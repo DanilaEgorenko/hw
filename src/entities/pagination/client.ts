@@ -1,5 +1,5 @@
+import ReposListStore from '@store/ReposListStore';
+
 export interface IPagination {
-  pageCount: number;
-  setPageCount: React.Dispatch<React.SetStateAction<number>>;
-  hasNextPage: boolean;
+  reposStore: ReposListStore;
 }

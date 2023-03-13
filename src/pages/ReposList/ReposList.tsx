@@ -1,25 +1,20 @@
-import { useState } from 'react';
+import { useCallback, useState } from 'react';
 
 import { Button } from '@components/Button/Button';
 import { Input } from '@components/Input/Input';
-import { MultiDropdown } from '@components/MultiDropdown/MultiDropdown';
+import { MultiDropdown, Option } from '@components/MultiDropdown/MultiDropdown';
+import { IType } from '@entities/reposList/client';
+import ReposListStore from '@store/ReposListStore';
+import SearchParamsStore from '@store/SearchParamsStore';
+import { observer } from 'mobx-react-lite';
 import { useSearchParams } from 'react-router-dom';
 
 import { RepoList } from './RepoList/RepoList';
 import styles from './ReposList.module.scss';
 
-interface IType {
-  checked: boolean;
-  key: string;
-  value: string;
-}
-
-export const Entities: React.FC = () => {
+export const Entities: React.FC = observer(() => {
+  const reposList = new ReposListStore();
   const [searchParams, setSearchParams] = useSearchParams();
-  const [searchVal, setSearchVal] = useState<string>(
-    searchParams.get('search') || ''
-  );
-  const [type] = useState<string>(searchParams.get('type') || '');
   const types: IType[] = [
     { checked: false, key: 'private', value: 'Private' },
     { checked: false, key: 'public', value: 'Public' },
@@ -32,29 +27,40 @@ export const Entities: React.FC = () => {
       value: 'Non allow forking',
     },
   ];
-  type.split(';').map((type: string) => {
+  reposList.type.split(';').map((type: string) => {
     types.map((el: IType) => {
       if (el.key === type) el.checked = true;
     });
   });
-  const [checked, setChecked] = useState<any>(
+  const [checked, setChecked] = useState<Option[]>(
     types.filter((el: IType) => el.checked)
   );
+  const handleInput = useCallback(
+    (value: string) => {
+      reposList.setSearchVal(value);
+    },
+    [reposList]
+  );
+  const searchParamsStore = new SearchParamsStore();
+  const handleSearch = useCallback(
+    (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
+      searchParamsStore.setSearchParams({
+        target: 'search',
+        value: reposList.searchVal,
+      });
+    },
+    [reposList.searchVal]
+  );
+
   return (
     <div className={styles.entities}>
       <div className={styles.entities__flex}>
         <Input
-          value={searchVal}
-          onChange={(value) => setSearchVal(value)}
+          value={reposList.searchVal}
+          onChange={(e) => handleInput(e)}
           placeholder="Enter organization name"
         />
-        <Button
-          className="button__search"
-          onClick={() => {
-            searchParams.set('search', searchVal);
-            setSearchParams(searchParams);
-          }}
-        />
+        <Button className="button__search" onClick={(e) => handleSearch(e)} />
       </div>
       <div className={styles.entities__flex}>
         <h1>Repositories</h1>
@@ -72,7 +78,7 @@ export const Entities: React.FC = () => {
           className="select"
         />
       </div>
-      <RepoList searchParams={searchParams} />
+      <RepoList />
     </div>
   );
-};
+});

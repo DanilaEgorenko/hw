@@ -8,7 +8,12 @@
   ],
   "rules": {
     "no-console": "error",
-    "prettier/prettier": "error",
+    "prettier/prettier": [
+      "warn",
+      {
+        "endOfLine": "lf"
+      }
+    ],
     "import/order": [
       "error",
       {
