@@ -1,14 +1,8 @@
 import React, { useMemo, useState } from 'react';
 
-import styles from './MultiDropdown.module.scss';
+import { Option } from '@entities/multiDropdown/client';
 
-export type Option = {
-  checked?: boolean;
-  /** Ключ варианта, используется для отправки на бек/использования в коде */
-  key: string;
-  /** Значение варианта, отображается пользователю */
-  value: string;
-};
+import styles from './MultiDropdown.module.scss';
 
 /** Пропсы, которые принимает компонент Dropdown */
 export type MultiDropdownProps = {

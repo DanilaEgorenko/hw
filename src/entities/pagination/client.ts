@@ -1,5 +1,5 @@
-import ReposListStore from '@store/ReposListStore';
+import { IReposListStore } from '@entities/reposListStore/client';
 
 export interface IPagination {
-  reposStore: ReposListStore;
+  reposStore: IReposListStore;
 }
