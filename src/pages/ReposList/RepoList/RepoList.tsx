@@ -1,27 +1,30 @@
-import React, { useEffect } from 'react';
+import React, { useContext, useEffect } from 'react';
 
 import { Card } from '@components/Card/Card';
 import { Pagination } from '@components/Pagination/Pagination';
-import { IRepo, IRepoList } from '@entities/repos/client';
+import { IRepo } from '@entities/repos/client';
+import { useLocalStore } from '@hooks/useLocalStore';
 import ReposListStore from '@store/ReposListStore';
 import { toDate } from '@utils/toDate';
-import { observer, useLocalObservable } from 'mobx-react-lite';
+import { observer } from 'mobx-react-lite';
 import { Link } from 'react-router-dom';
 
+import { ContextRootStore } from '../../../index';
 import styles from '../ReposList.module.scss';
 
-export const RepoList: React.FC<IRepoList> = observer(() => {
-  const reposStore = useLocalObservable(() => new ReposListStore());
+export const RepoList: React.FC = observer(() => {
+  const root = useContext(ContextRootStore);
+  const reposList = useLocalStore(() => new ReposListStore(root));
   useEffect(() => {
-    reposStore.getOrganizationReposList({
+    reposList.getOrganizationReposList({
       organizationName: 'ktsstudio',
     });
-  }, [reposStore]);
+  }, [reposList]);
 
   return (
     <>
       <div className={styles.repos}>
-        {reposStore.repos.map((repo: IRepo) => {
+        {reposList.repos.map((repo: IRepo) => {
           return (
             <Link
               to={`/repo/${repo.name}`}
@@ -50,7 +53,7 @@ export const RepoList: React.FC<IRepoList> = observer(() => {
         })}
       </div>
 
-      <Pagination reposStore={reposStore} />
+      <Pagination reposStore={reposList} />
     </>
   );
 });

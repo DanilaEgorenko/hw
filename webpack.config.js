@@ -109,6 +109,7 @@ module.exports = {
       '@store': path.join(sourcePath, 'store/'),
       '@styles': path.join(sourcePath, 'styles/'),
       '@entities': path.join(sourcePath, 'entities/'),
+      '@hooks': path.join(sourcePath, 'hooks/'),
       '@utils': path.join(sourcePath, 'utils/'),
     },
   },

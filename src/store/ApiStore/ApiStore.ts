@@ -7,10 +7,13 @@ export default class ApiStore implements IApistore {
     this.url = url;
   }
 
-  async request({
-    endpoint,
-    headers,
-  }: RequestParams): Promise<AxiosResponse<any, any>> {
+  async request({ endpoint }: RequestParams): Promise<AxiosResponse<any, any>> {
+    let headers = {};
+    if (endpoint.split('/').at(-1) === 'readme') {
+      headers = {
+        accept: 'application/vnd.github.html+json',
+      };
+    }
     const res = await axios.get(this.url + endpoint, {
       headers,
     });

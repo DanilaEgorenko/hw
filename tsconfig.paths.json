@@ -26,6 +26,9 @@
       "@entities/*": [
         "entities/*"
       ],
+      "@hooks/*": [
+        "hooks/*"
+      ],
       "@utils/*": [
         "utils/*"
       ]

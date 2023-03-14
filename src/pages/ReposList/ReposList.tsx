@@ -1,18 +1,21 @@
-import React, { useCallback } from 'react';
+import React, { useCallback, useContext } from 'react';
 
 import { Button } from '@components/Button/Button';
 import { Input } from '@components/Input/Input';
 import { MultiDropdown } from '@components/MultiDropdown/MultiDropdown';
 import { IType } from '@entities/reposList/client';
+import { useLocalStore } from '@hooks/useLocalStore';
 import ReposListStore from '@store/ReposListStore';
-import { observer, useLocalObservable } from 'mobx-react-lite';
+import { observer } from 'mobx-react-lite';
 import { useSearchParams } from 'react-router-dom';
 
+import { ContextRootStore } from '../../index';
 import { RepoList } from './RepoList/RepoList';
 import styles from './ReposList.module.scss';
 
 export const ReposList: React.FC = observer(() => {
-  const reposList = useLocalObservable(() => new ReposListStore());
+  const root = useContext(ContextRootStore);
+  const reposList = useLocalStore(() => new ReposListStore(root));
   reposList.type.split(';').map((type: string) => {
     reposList.types.map((el: IType) => {
       if (el.key === type) el.checked = true;

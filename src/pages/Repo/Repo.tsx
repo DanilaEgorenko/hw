@@ -1,16 +1,19 @@
-import React, { useEffect } from 'react';
+import React, { useContext, useEffect } from 'react';
 
 import { Tag } from '@components/Tag/Tag';
+import { useLocalStore } from '@hooks/useLocalStore';
 import RepoStore from '@store/RepoStore';
 import parse from 'html-react-parser';
-import { observer, useLocalObservable } from 'mobx-react-lite';
+import { observer } from 'mobx-react-lite';
 import { useNavigate, useParams } from 'react-router-dom';
 
+import { ContextRootStore } from '../../index';
 import styles from './Repo.module.scss';
 
 export const Repo: React.FC = observer(() => {
   const { repo } = useParams();
-  const repoStore = useLocalObservable(() => new RepoStore());
+  const root = useContext(ContextRootStore);
+  const repoStore = useLocalStore(() => new RepoStore(root));
 
   useEffect(() => {
     repoStore.getOrganizationRepoData({

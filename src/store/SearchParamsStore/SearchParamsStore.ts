@@ -11,7 +11,7 @@ export default class SearchParamsStore implements ISearchParamsStore {
   constructor() {
     makeObservable<SearchParamsStore, PrivateFields>(this, {
       _searchParams: observable.ref,
-      setSearch: action,
+      setSearch: action.bound,
     });
   }
 
