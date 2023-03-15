@@ -43,18 +43,20 @@ export default class ReposListStore implements IReposListStore {
 
   private _meta: Meta = Meta.initial;
   private _repos: IRepo[] = [];
-  private _curPage: number = +(
-    this?._rootStore?._searchParamsStore.getParam('page') || 1
-  );
+  private _curPage: number = 1;
   private _hasNextPage: boolean = false;
-  private _searchVal: string =
-    this?._rootStore?._searchParamsStore.getParam('search')?.toString() || '';
-  private _type: string =
-    this?._rootStore?._searchParamsStore.getParam('type')?.toString() || '';
+  private _searchVal: string = '';
+  private _type: string = '';
   private _checked: Option[] = this.types.filter((el: IType) => el.checked);
 
   constructor(_rootStore: RootStore) {
     this._rootStore = _rootStore;
+    this._searchVal =
+      this?._rootStore?._searchParamsStore.getParam('search') || '';
+    this._type = this?._rootStore?._searchParamsStore.getParam('type') || '';
+    this._curPage = +(
+      this?._rootStore?._searchParamsStore.getParam('page') || 1
+    );
     makeObservable<ReposListStore, PrivateFields>(this, {
       _meta: observable,
       _repos: observable,
@@ -70,9 +72,10 @@ export default class ReposListStore implements IReposListStore {
       searchVal: computed,
       type: computed,
       checked: computed,
+      setCurPage: observable,
+      setType: observable,
       getOrganizationReposList: action.bound,
       hasNextReposList: action.bound,
-      setSearchVal: action.bound,
     });
   }
 
@@ -88,6 +91,10 @@ export default class ReposListStore implements IReposListStore {
     return this._curPage;
   }
 
+  setCurPage(val: number): void {
+    this._curPage = val;
+  }
+
   get hasNextPage(): boolean {
     return this._hasNextPage;
   }
@@ -100,6 +107,10 @@ export default class ReposListStore implements IReposListStore {
     return this._type;
   }
 
+  setType(val: string): void {
+    this._type = val;
+  }
+
   get checked(): Option[] {
     return this._checked;
   }
@@ -110,7 +121,7 @@ export default class ReposListStore implements IReposListStore {
     this._meta = Meta.loading;
 
     const response = await this?._rootStore?._apiStore.request({
-      endpoint: `/orgs/${params.organizationName}/repos?page=${this.curPage}`,
+      endpoint: `/orgs/${params.organizationName}/repos?page=${this.curPage}&sort=updated`,
     });
 
     runInAction(() => {
@@ -170,10 +181,6 @@ export default class ReposListStore implements IReposListStore {
 
   setSearchVal(val: string): void {
     this._searchVal = val;
-  }
-
-  setChecked(val: Option[]): void {
-    this._checked = val;
   }
 
   destroy(): void {}

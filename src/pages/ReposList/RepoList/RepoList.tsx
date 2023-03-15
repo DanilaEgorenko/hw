@@ -1,26 +1,15 @@
-import React, { useContext, useEffect } from 'react';
+import React from 'react';
 
 import { Card } from '@components/Card/Card';
-import { Pagination } from '@components/Pagination/Pagination';
+import { IRepoList } from '@entities/repoList/client';
 import { IRepo } from '@entities/repos/client';
-import { useLocalStore } from '@hooks/useLocalStore';
-import ReposListStore from '@store/ReposListStore';
 import { toDate } from '@utils/toDate';
 import { observer } from 'mobx-react-lite';
 import { Link } from 'react-router-dom';
 
-import { ContextRootStore } from '../../../index';
 import styles from '../ReposList.module.scss';
 
-export const RepoList: React.FC = observer(() => {
-  const root = useContext(ContextRootStore);
-  const reposList = useLocalStore(() => new ReposListStore(root));
-  useEffect(() => {
-    reposList.getOrganizationReposList({
-      organizationName: 'ktsstudio',
-    });
-  }, [reposList]);
-
+export const RepoList: React.FC<IRepoList> = observer(({ reposList }) => {
   return (
     <>
       <div className={styles.repos}>
@@ -52,8 +41,6 @@ export const RepoList: React.FC = observer(() => {
           );
         })}
       </div>
-
-      <Pagination reposStore={reposList} />
     </>
   );
 });

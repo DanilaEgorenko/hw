@@ -45,14 +45,14 @@ export const MultiDropdown: React.FC<MultiDropdownProps> = React.memo(
           {pluralizeOptions(value)}
         </button>
         {!disabled && isOpen && (
-          <ul>
-            {options.map(({ key, value, checked }) => {
+          <ul className={styles.ul}>
+            {optionsState.map(({ key, value, checked }) => {
               return (
-                <li key={key}>
+                <li key={key} className={styles.li}>
                   <button
                     className={checked ? styles.checked : ''}
                     onClick={(e) => {
-                      const arr = optionsState.map((el: any) => {
+                      const arr = optionsState.map((el: Option) => {
                         if (el.key === key) {
                           el.checked = !el.checked;
                         }

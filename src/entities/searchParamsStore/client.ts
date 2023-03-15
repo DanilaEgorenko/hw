@@ -1,8 +1,6 @@
 export interface ISearchParamsStore {
-  getParam(
-    key: string
-  ): undefined | string | string[] | qs.ParsedQs | qs.ParsedQs[];
-  setSearch(search: string): void;
+  getParam(key: string): string | null;
+  setParam(key: string, value: string): void;
 }
 
 export interface ISetSearchParams {

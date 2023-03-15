@@ -73,19 +73,23 @@ export default class RepoStore implements IGitHubStore {
   ): Promise<void> {
     this._meta = Meta.loading;
 
-    const response = await this?._rootStore?._apiStore.request({
-      endpoint: `/repos/${params.organizationName}/${params.repo}/readme`,
-    });
+    try {
+      const response = await this?._rootStore?._apiStore.request({
+        endpoint: `/repos/${params.organizationName}/${params.repo}/readme`,
+      });
 
-    runInAction(() => {
-      if (response?.status === 200) {
-        this._meta = Meta.success;
-        this._readme = response.data;
-        return;
-      }
+      runInAction(() => {
+        if (response?.status === 200) {
+          this._meta = Meta.success;
+          this._readme = response.data;
+          return;
+        }
 
-      this._meta = Meta.error;
-    });
+        this._meta = Meta.error;
+      });
+    } catch (e) {
+      this._meta = Meta.success;
+    }
   }
 
   destroy(): void {}
