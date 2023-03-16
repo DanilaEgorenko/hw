@@ -1,4 +1,4 @@
-import React, { useMemo, useState } from 'react';
+import React, { useState } from 'react';
 
 import { Option } from '@entities/multiDropdown/client';
 
@@ -21,15 +21,15 @@ export type MultiDropdownProps = {
 
 export const MultiDropdown: React.FC<MultiDropdownProps> = React.memo(
   ({ options, value, onChange, disabled, pluralizeOptions, className }) => {
-    const optState = useMemo(
-      () =>
-        options.map((option) => {
-          option.checked = value.some((o) => o.key === option.key);
-          return option;
-        }),
-      [options, value]
-    );
-    const [optionsState, setOptionsState] = useState<Option[]>(optState);
+    //const optState = useMemo(
+    //  () =>
+    //   options.map((option) => {
+    //     option.checked = value.some((o) => o.key === option.key);
+    //      return option;
+    //    }),
+    //  [options, value]
+    //);
+    const [optionsState, setOptionsState] = useState<Option[]>(options);
     const [isOpen, setIsOpen] = useState(false);
     return (
       <div
@@ -42,7 +42,7 @@ export const MultiDropdown: React.FC<MultiDropdownProps> = React.memo(
           disabled={disabled && !value.length}
           onClick={() => setIsOpen(!isOpen)}
         >
-          {pluralizeOptions(value)}
+          {pluralizeOptions(optionsState.filter((el) => el.checked))}
         </button>
         {!disabled && isOpen && (
           <ul className={styles.ul}>
@@ -50,9 +50,9 @@ export const MultiDropdown: React.FC<MultiDropdownProps> = React.memo(
               return (
                 <li key={key} className={styles.li}>
                   <button
-                    className={checked ? styles.checked : ''}
+                    className={checked ? `${styles.checked}` : ''}
                     onClick={(e) => {
-                      const arr = optionsState.map((el: Option) => {
+                      const arr = options.map((el: Option) => {
                         if (el.key === key) {
                           el.checked = !el.checked;
                         }
