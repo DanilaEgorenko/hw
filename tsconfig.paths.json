@@ -1,36 +1,36 @@
 {
   "compilerOptions": {
-    "baseUrl": ".",
+    "baseUrl": "./src/",
     "paths": {
       "@components/*": [
-        "src/components/*"
+        "components/*"
       ],
       "@config/*": [
-        "src/config/*"
+        "config/*"
       ],
       "@global/*": [
-        "src/global/*"
+        "global/*"
       ],
       "@mixins/*": [
-        "src/mixins/*"
+        "mixins/*"
       ],
       "@pages/*": [
-        "src/pages/*"
+        "pages/*"
       ],
       "@store/*": [
-        "src/store/*"
+        "store/*"
       ],
       "@styles/*": [
-        "src/styles/*"
+        "styles/*"
       ],
       "@entities/*": [
-        "src/entities/*"
+        "entities/*"
       ],
-      "@vars/*": [
-        "src/vars/*"
+      "@hooks/*": [
+        "hooks/*"
       ],
       "@utils/*": [
-        "src/utils/*"
+        "utils/*"
       ]
     }
   }

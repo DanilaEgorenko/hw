@@ -1,14 +1,8 @@
-import React, { useMemo, useState } from 'react';
+import React, { useState } from 'react';
+
+import { Option } from '@entities/multiDropdown/client';
 
 import styles from './MultiDropdown.module.scss';
-
-export type Option = {
-  checked?: boolean;
-  /** Ключ варианта, используется для отправки на бек/использования в коде */
-  key: string;
-  /** Значение варианта, отображается пользователю */
-  value: string;
-};
 
 /** Пропсы, которые принимает компонент Dropdown */
 export type MultiDropdownProps = {
@@ -27,15 +21,15 @@ export type MultiDropdownProps = {
 
 export const MultiDropdown: React.FC<MultiDropdownProps> = React.memo(
   ({ options, value, onChange, disabled, pluralizeOptions, className }) => {
-    const optState = useMemo(
-      () =>
-        options.map((option) => {
-          option.checked = value.some((o) => o.key === option.key);
-          return option;
-        }),
-      [options, value]
-    );
-    const [optionsState, setOptionsState] = useState<Option[]>(optState);
+    //const optState = useMemo(
+    //  () =>
+    //   options.map((option) => {
+    //     option.checked = value.some((o) => o.key === option.key);
+    //      return option;
+    //    }),
+    //  [options, value]
+    //);
+    const [optionsState, setOptionsState] = useState<Option[]>(options);
     const [isOpen, setIsOpen] = useState(false);
     return (
       <div
@@ -48,17 +42,17 @@ export const MultiDropdown: React.FC<MultiDropdownProps> = React.memo(
           disabled={disabled && !value.length}
           onClick={() => setIsOpen(!isOpen)}
         >
-          {pluralizeOptions(value)}
+          {pluralizeOptions(optionsState.filter((el) => el.checked))}
         </button>
         {!disabled && isOpen && (
-          <ul>
-            {options.map(({ key, value, checked }) => {
+          <ul className={styles.ul}>
+            {optionsState.map(({ key, value, checked }) => {
               return (
-                <li key={key}>
+                <li key={key} className={styles.li}>
                   <button
-                    className={checked ? styles.checked : ''}
+                    className={checked ? `${styles.checked}` : ''}
                     onClick={(e) => {
-                      const arr = optionsState.map((el: any) => {
+                      const arr = options.map((el: Option) => {
                         if (el.key === key) {
                           el.checked = !el.checked;
                         }

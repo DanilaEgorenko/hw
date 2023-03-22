@@ -32,4 +32,22 @@
 
 .card__link {
   text-decoration: none;
+  flex-grow: 1;
+  width: 30%;
+}
+
+@media (max-width: 1024px) {
+  .card__link {
+    text-decoration: none;
+    flex-grow: 1;
+    width: 40%;
+  }
+}
+
+@media (max-width: 767px) {
+  .card__link {
+    text-decoration: none;
+    flex-grow: 1;
+    width: 100%;
+  }
 }

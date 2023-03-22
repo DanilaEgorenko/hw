@@ -1,3 +1,4 @@
+
 interface Owner {
   login: string;
   id: number;
@@ -109,5 +110,3 @@ export interface IRepo {
   default_branch: string;
   permissions: Permissions;
 }
-
-export interface IRepoList {}
